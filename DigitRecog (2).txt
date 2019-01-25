@@ -1,0 +1,217 @@
+
+# coding: utf-8
+
+# In[ ]:
+
+
+import csv
+import operator
+import sys
+import numpy as np
+from operator import itemgetter, attrgetter
+
+
+class Digit:
+    def __init__(self, label, data):
+        self.label=label
+        self.data=data
+
+    def distance(self,digit):
+        sum=0
+        for i in range(0,len(self.data)):            
+            sum=sum+(self.data[i]-digit.data[i])**2
+        return sum**.5, 
+    
+d=Digit("2", [1,2,3,4,5])
+s=Digit("1", [2,3,4,5,6])
+
+
+
+
+     
+
+print(s.distance(d))
+print(s.label)
+print(s.data)
+print("YYYYYYYYYY")
+        
+def get_training_set():
+	dataset=[]
+	with open(r'C:\Users\PythonE\Desktop\PythonTest\smalltrain.csv') as csvfile:
+            csvreader=csv.reader(csvfile)
+            rownumber=0
+            for row in csvreader:
+                pixels=[]
+                if not rownumber==0:
+                    data=Digit("",pixels)
+                    #print(data.label)
+                    #print(data.data)
+                    
+                    dataset.append(data)
+                    colnumber=0
+                    for col in row:
+                        if colnumber==0:
+                            data.label=col
+                            #print(row)
+                            #print(int(col))
+                        else:
+                            pixels.append(int(col))
+                            
+                        colnumber=colnumber+1
+                #print("ZZZZZZZ")
+                #print(pixels)
+                rownumber=rownumber+1
+	return dataset
+#
+#
+
+tabletrain=get_training_set()
+print(type(tabletrain))
+print(len(tabletrain))
+print("XXXXXXXXXXXXXXX")
+print(tabletrain[1].label)
+print(len(tabletrain[1].data))
+print(tabletrain[1].data)
+
+
+    
+
+
+
+
+'''def get_training_set():
+	dataset=[]
+	with open('../data/train.csv','rb') as csvfile:
+        #csvreader=csv.reader(csvfile)
+    #rownumber=0
+		for row in csvreader:
+			if not rownumber==0:
+				data=Digit()
+				dataset.append(data)
+				colnumber=0
+				for col in row:
+					pixels=[]
+					if colnumber==0:
+						data.label=col
+					else:
+						data.data.append(int(col))
+					colnumber=colnumber+1
+			rownumber=rownumber+1
+	return dataset
+'''
+
+get_training_set()
+print("AAAAAA")
+
+
+
+
+
+def get_test_set():
+    dataset=[]
+    with open(r'C:\Users\PythonE\Desktop\PythonTest\smalltest.csv') as csvfile:
+            csvreader=csv.reader(csvfile)
+            rownumber=0
+            for row in csvreader:
+                pixels=[]
+                if not rownumber==0:
+                    data=Digit("",pixels)
+                    dataset.append(data)
+                    for col in row:
+                       pixels.append(int(col))
+                rownumber=rownumber+1
+    return dataset
+
+
+tabletest=get_test_set()
+print(type(tabletest))
+print(len(tabletest))
+print("gggggggggg")
+print(tabletest[1].label)
+print("hhhhhhhhh")
+print(len(tabletest[1].data))
+print(tabletest[1].data)
+
+
+
+
+trainingset=get_training_set()
+testset=get_test_set()
+f=open('./out.csv','w')
+f.write('ImageId,Label\n')
+i=1
+for test in testset:
+    results=[]
+    j=0
+    for train in trainingset:
+        distance=test.distance(train)
+        #if j < 10:
+           # print(j, "   ", distance)
+        #j=j+1
+        touple=distance,train
+        results.append(touple)
+        #print(results)
+        
+    results=sorted(results,key=lambda result:result[0])
+    
+    '''for k in range(5):
+        #print(k)
+        part=results[k]
+        #print(part[1])
+        temp=part[1]
+        print(k, " ",temp.label)
+        matr=temp.data
+        #print(matr)
+        matrp=np.asarray(matr).reshape(28,28)
+        #print(matrp)
+        c=0
+        for x in matrp:
+            c=[]
+            #print("BBBBBB    ", c)
+            #print(x)
+            d=x
+            for y in d:
+                        #print(x[y])
+                        #print("cell  ", y)
+                if y > 0:
+                        c=c+['X']
+                else:
+                        c=c+["."]
+            print(c)
+     #$$$$$$$$$$ 
+'''
+    #print("END")
+    
+    
+#if i == 5:
+    #sys.exit()
+  
+
+
+    
+    #print(results)
+    labelmap={}
+    #labelmap=[]
+    for y in range(0,99):
+        result=results[y]
+        l=result[1].label
+        if l in labelmap:
+            labelmap[l]+=1
+        else:
+            labelmap[l]=1
+    labelmap=sorted(labelmap.items(), key=operator.itemgetter(1), reverse=True)
+    print(labelmap)
+    #print(labelmap[0])
+    #f.write(str(i))
+    print(str(i))
+    #f.write(',')
+    #f.write(labelmap[0][0])
+    #print(labelmap[0][0])
+    #f.write('\n')
+    print (i)
+    print (labelmap)
+    i=i+1
+sys.exit()
+f.close()
+
+
